@@ -1,16 +1,19 @@
 <?php
-	$Username = $_GET["username"];
-	$ProfileURL = "http://www.roblox.com/user.aspx?username=" . $Username;
-	$ProfileContent = file_get_contents($ProfileURL);
-	$Start = strpos($ProfileContent,'<form name="aspnetForm" method="post" action="/user.aspx?id=');
-	$End = strpos(substr($ProfileContent,$Start),'" id="aspnetForm">');
-	$UserId = substr($ProfileContent,$Start,$End);
-	$UserId = substr($Username,strlen('<form name="aspnetForm" method="post" action="/user.aspx?id='));
-  
+	$Username = $_GET["Username"];
+	if($Username=="" or $Username==nil){ die(); }
+	$ProfileURL = "http://www.roblox.com/user.aspx?username=" . strtolower($Username);
+	$ProfilePage = file_get_contents($ProfileURL);
+	$Start = strpos($ProfilePage,'<a data-js-my-button style="float: right" href="Friends.aspx?UserID=');
+	$End = strpos(substr($ProfilePage,$Start),'" class="btn-small btn-neutral" id="HeaderButton">');
+	$UserId = substr($ProfilePage,$Start,$End);
+	$UserId = substr($UserId,strlen('<a data-js-my-button style="float: right" href="Friends.aspx?UserID='));
+	if ($UserId == null) {
+		die("Please enter a valid username");
+	}
 	$JSON = array(
-		UserId => $UserId,
 		Username => $Username,
+		UserId => $UserId
 	);
-	
-	echo json_encode($JSON);
+  
+  	echo json_encode($JSON);
 ?>

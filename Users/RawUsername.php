@@ -7,10 +7,5 @@
 	$End = strpos(substr($ProfilePage,$Start),"</span>");
 	$Username = substr($ProfilePage,$Start,$End);
 	$Username = substr($Username,strlen('<span id="ctl00_cphRoblox_rbxHeaderPane_nameRegion" style="font-size:20px; font-weight:bold;">'));
-	$JSON = array(
-		UserId => $UserId,
-		Username => $Username
-	);
-  
-  	echo json_encode($JSON);
+	echo $Username;
 ?>

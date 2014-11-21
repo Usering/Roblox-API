@@ -1,50 +1,17 @@
-<!-- 
 <?php
 	$UserId = $_GET["UserId"];
-	if ($UserId=="" or $UserId==nil) { die(); }
-	$PreviousUsernames = "";
-	$Profile = "http://www.roblox.com/User.aspx?ID=".$UserId;
-	$ProfileContent = file_get_contents($Profile);
-	$Start = strpos($ProfileContent,"title='Previous usernames: ");
-	$End = strpos(substr($ProfileContent,$Start),"'/></div>");
-	if ($End == false) {} //make PreviousUserames the persons username 
-	$Names = substr($ProfileContent,$Start,$End);
-	$Names = substr($Names,strlen("title='Previous usernames: "));
-	//echo $Names;
-	$StartArr = array(
+	if($UserId=="" or $UserId==nil){ die(); }
+	$ProfileURL = "http://www.roblox.com/user.aspx?id=" . $UserId;
+	$ProfilePage = file_get_contents($ProfileURL);
+	$Start = strpos($ProfilePage,"<img class='tooltip-bottom' style='cursor:pointer;' src='http://images.rbxcdn.com/d3246f1ece35d773099f876a31a38e5a.png' title='Previous usernames: ");
+	$End = strpos(substr($ProfilePage,$Start),"'/></div>");
+	$Usernames = substr($ProfilePage,$Start,$End);
+	$Usernames = substr($Usernames,strlen("<img class='tooltip-bottom' style='cursor:pointer;' src='http://images.rbxcdn.com/d3246f1ece35d773099f876a31a38e5a.png' title='Previous usernames: "));
+
+	$table = array(
 		UserId => $UserId,
+		Usernames => explode(", ",$Usernames)
 	);
-	
-	$EndArr = array_filter(explode(", ",$Names));
-	
-	$JSON = array_merge($EndArr,$StartArr);
-	
-	echo json_encode($JSON);
-?>
- -->
- 
- <?php
-        $UserId = $_GET["UserId"];
-        if ($UserId=="" or $UserId==nil) { die(); }
-        $PreviousUsernames = "";
-        $Profile = "http://www.roblox.com/User.aspx?ID=".$UserId;
-        $ProfileContent = file_get_contents($Profile);
-        $Start = strpos($ProfileContent,"title='Previous usernames: ");
-        $End = strpos(substr($ProfileContent,$Start),"'/></div>");
-        if ($End == false) {} //make PreviousUserames the persons username
-        $Names = substr($ProfileContent,$Start,$End);
-        $Names = substr($Names,strlen("title='Previous usernames: "));
-        $Usernames = array_filter(explode(", ",$Names));
-        if (count($Usernames) == 0) {
-        	$Username = file_get_contents("http://api.robloxapi.com/Users/cusername?UserId=" . $UserId);
-        	array_push($Usernames,$Username);
-        }
-        //echo $Names;
-       
-        $JSONArr = array(
-                UserId => $UserId,
-                                Usernames => $Usernames
-        );
-       
-        echo json_encode($JSONArr);
+
+	echo json_encode($table);
 ?>
